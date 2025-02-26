@@ -1,13 +1,16 @@
 package org.example.expert.domain.auth.dto.response;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 public class SignupResponse {
 
-    private final String bearerToken;
+    private final String accessToken;
+    private final String refreshToken;
 
-    public SignupResponse(String bearerToken) {
-        this.bearerToken = bearerToken;
+    public SignupResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

@@ -3,6 +3,7 @@ package org.example.expert.domain.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.JwtUtil;
 import org.example.expert.config.PasswordEncoder;
+import org.example.expert.config.dto.TokenDto;
 import org.example.expert.domain.auth.dto.request.SigninRequest;
 import org.example.expert.domain.auth.dto.request.SignupRequest;
 import org.example.expert.domain.auth.dto.response.SigninResponse;
@@ -38,10 +39,10 @@ public class AuthService {
                 userRole
         );
         User savedUser = userRepository.save(newUser);
+        TokenDto tokenDto = jwtUtil.createToken(savedUser.getId(), savedUser.getEmail(), userRole);
 
-        String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getEmail(), userRole);
 
-        return new SignupResponse(bearerToken);
+        return new SignupResponse(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 
     @Transactional(readOnly = true)
@@ -53,9 +54,8 @@ public class AuthService {
         if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
             throw new AuthException("잘못된 비밀번호입니다.");
         }
+        TokenDto tokenDto = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
 
-        String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
-
-        return new SigninResponse(bearerToken);
+        return new SigninResponse(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 }
