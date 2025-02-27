@@ -1,4 +1,4 @@
-package org.example.expert.config.dto;
+package org.example.expert.config.jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

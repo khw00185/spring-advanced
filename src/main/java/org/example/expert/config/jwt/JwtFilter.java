@@ -1,4 +1,4 @@
-package org.example.expert.config;
+package org.example.expert.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,7 +32,7 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (url.startsWith("/auth")) {
+        if (url.startsWith("/auth") || url.startsWith("/refresh")) {
             chain.doFilter(request, response);
             return;
         }
@@ -76,8 +76,8 @@ public class JwtFilter implements Filter {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않는 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 JWT 토큰입니다.");
+            log.error("Expired JWT token, 만료된 JWT AccessToken 입니다.", e);
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 JWT 액세스토큰입니다. 리프레쉬 토큰을 발급 받으세요.");
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "지원되지 않는 JWT 토큰입니다.");
